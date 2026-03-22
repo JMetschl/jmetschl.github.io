@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ page.title }}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <meta name="google-site-verification" content="xsa6IEUSNUSQFTwN8GOPY6s3akKLC9pqFUbrPkY59UY" />
+  </head>
+  <body>
+    <div class="navbar-padding-top">
+      {% include navigation.html %}
+      <div class="container" id="main-container">{{ content }}</div>
+    </div>
+    {% include footer.html %}
+  </body>
+</html>
+
+<style>
+  .navbar-padding-top {
+    padding-top: 6em;
+  }
+  #main-container {
+    margin-bottom: 10vh;
+    min-height: 30vh;
+  }
+</style>

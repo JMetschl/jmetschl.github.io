@@ -1,0 +1,45 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    # Jeden Montag um 09:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: false
+
+      - name: Configure bundler for local gems
+        run: bundle config set --local path 'vendor/bundle'
+
+      - name: Update dependencies
+        run: bundle update
+
+      - name: Test Jekyll build
+        run: bundle exec jekyll build
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'chore: update ruby dependencies'
+          title: 'chore: update ruby dependencies'
+          body: |
+            Automated dependency update by GitHub Actions.
+            
+            Please review the changes to `Gemfile.lock` and merge if all tests pass.
+          branch: update/dependencies
+          delete-branch: true
