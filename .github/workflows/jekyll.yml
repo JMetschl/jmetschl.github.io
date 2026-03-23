@@ -145,11 +145,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Download fixed YAML files
-        uses: actions/download-artifact@v4
-        with:
-          name: fixed-yaml
-          path: _data
+      # - name: Download fixed YAML files
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: fixed-yaml
+      #     path: _data
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -171,41 +171,41 @@ jobs:
         with:
           path: _site
 
-  create-fix-pr:
-    if: needs.fix-yaml.outputs.changes == 'true'
-    runs-on: ubuntu-latest
-    #needs: fix-yaml
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.1
+  # create-fix-pr:
+  #   if: needs.fix-yaml.outputs.changes == 'true'
+  #   runs-on: ubuntu-latest
+  #   #needs: fix-yaml
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4.1.1
 
-      - name: Download fixed YAML files
-        uses: actions/download-artifact@v4
-        with:
-          name: fixed-yaml
-          path: _data
+      # - name: Download fixed YAML files
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: fixed-yaml
+      #     path: _data
 
-      - name: Create Pull Request with YAML fixes
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'fix: auto-correct YAML syntax issues'
-          title: 'fix: auto-correct YAML syntax issues'
-          body: |
-            Automated fix for YAML syntax errors detected during build.
+      # - name: Create Pull Request with YAML fixes
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit-message: 'fix: auto-correct YAML syntax issues'
+      #     title: 'fix: auto-correct YAML syntax issues'
+      #     body: |
+      #       Automated fix for YAML syntax errors detected during build.
             
-            **Changes made:**
-            - Fixed unquoted strings containing colons in text fields
-            - Removed trailing whitespace
-            - Corrected list item formatting
+      #       **Changes made:**
+      #       - Fixed unquoted strings containing colons in text fields
+      #       - Removed trailing whitespace
+      #       - Corrected list item formatting
             
-            Please review and merge if the changes look correct.
-          branch: fix/yaml-syntax
-          delete-branch: true
-          labels: automated
+      #       Please review and merge if the changes look correct.
+      #     branch: fix/yaml-syntax
+      #     delete-branch: true
+      #     labels: automated
 
   deploy:
     runs-on: ubuntu-latest
