@@ -1,0 +1,35 @@
+{% assign art_name = include.art.name | downcase %} {% assign found_image
+= "" %} {% assign image_folder = "img/" | append: include.type | downcase %}
+
+<!-- find current art first image-->
+{% for image in site.static_files %} {% assign image_path = image.path |
+downcase %} {% if image_path contains image_folder and image_path contains
+art_name %} {% assign found_image = image.path %} {% break %} {% endif %} {%
+endfor %}
+
+<a href="/{{ include.type }}/{{ include.art.name | slugify }}">
+  <div
+    class="box"
+    style="background-image: url('{{ site.baseurl }}{{ found_image | default: include.art.image }}');"
+  >
+    <div class="box" id="name-box">
+      {{ include.art.name }}<br />
+    </div>
+  </div>
+</a>
+
+<style>
+  .box {
+    height: 40vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: left;
+    align-items: flex-end;
+  }
+  #name-box {
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+</style>

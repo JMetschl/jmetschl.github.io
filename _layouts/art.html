@@ -1,0 +1,92 @@
+---
+layout: default
+---
+
+<div class="container mt-6">
+  <div class="animal-display">
+    <!-- Hauptbild -->
+    <div class="animal-image-display mr-6">
+      <div
+        id="main-image"
+        class="box"
+        style="background-image: url('{{ page.image }}');"
+        data-current="{{ page.image }}"
+      ></div>
+
+      {% if page.images.size > 1 %}
+      <div class="image-gallery">
+        {% assign thumbnails = page.images | slice: 1, 4 %}
+        <!-- Nimmt die ersten 4 Bilder, ohne das Hauptbild -->
+        {% for image in thumbnails %}
+        <div
+          class="thumbnail"
+          style="background-image: url('{{ site.baseurl }}{{ image }}');"
+          onclick="swapImage(this)"
+          data-image="{{ site.baseurl }}{{ image }}"
+        ></div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Tierdetails -->
+    <div>
+      <h1 class="title">{{ page.title }}</h1>
+    </div>
+  </div>
+</div>
+
+<style>
+  .animal-display {
+    display: flex;
+  }
+
+  .box {
+    height: 40vh;
+    min-width: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: left;
+    align-items: flex-end;
+  }
+
+  .image-gallery {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    overflow-x: auto;
+    justify-content: space-between;
+  }
+
+  .thumbnail {
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+  }
+
+  .thumbnail:hover {
+    border-color: #3273dc;
+  }
+</style>
+
+<script>
+  function swapImage(thumbnail) {
+    let mainImageDiv = document.getElementById("main-image");
+
+    let oldMainImage = mainImageDiv.getAttribute("data-current");
+
+    let newImage = thumbnail.getAttribute("data-image");
+
+    mainImageDiv.style.backgroundImage = "url('" + newImage + "')";
+    mainImageDiv.setAttribute("data-current", newImage);
+    thumbnail.style.backgroundImage = "url('" + oldMainImage + "')";
+    thumbnail.setAttribute("data-image", oldMainImage);
+  }
+</script>
