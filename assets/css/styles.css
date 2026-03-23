@@ -5,16 +5,15 @@
   --bulma-link: #0583f2;
   --bulma-text: #260f01;
   --bulma-info: #0583f2;
-  --bulma-body-color: #401e01;
-  --bulma-text-strong: #260f01;
-  --bulma-body-background-color: #f2e3d5;
+  --bulma-body-color: #363131;
+  --bulma-text-strong: #818181;
+  --bulma-body-background-color: #ffffff;
   --bulma-navbar-height: 5em;
   --bulma-family-primary: "Saira Semi Condensed", serif;
 
-  --afumati-brown: #401e01;
   --bulma-size-5: 42px;
   --bulma-size-3: 64px;
-  --bulma-primary-base: #f2e3d5;
+  --bulma-primary-base: #ffffff;
   --bulma-primary-h: 29deg;
   --bulma-primary-s: 52.7%;
   --bulma-primary-l: 89.2%;
@@ -29,7 +28,7 @@ body {
 }
 
 .footer {
-  --bulma-footer-background-color: #401e01;
+  --bulma-footer-background-color: #fcfcfc;
   color: #f2e3d5 !important;
   a {
     color: #4ebeeb !important;
