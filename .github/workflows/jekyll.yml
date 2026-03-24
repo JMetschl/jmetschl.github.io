@@ -201,30 +201,30 @@ jobs:
       #     delete-branch: true
       #     labels: automated
 
-docker-build:
-  runs-on: ubuntu-latest
-  needs: build
-  permissions:
-    contents: read
-    packages: write
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      packages: write
 
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4.1.1
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
 
-    # - name: Download fixed YAML files
-    #   uses: actions/download-artifact@v4
-    #   with:
-    #     name: fixed-yaml
-    #     path: _data
+      # - name: Download fixed YAML files
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: fixed-yaml
+      #     path: _data
 
-    - name: Log in to GHCR
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Build Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/familiengalerie:latest .
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/familiengalerie:latest .
 
-    - name: Push Docker image
-      run: |
-        docker push ghcr.io/${{ github.repository_owner }}/familiengalerie:latest
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/familiengalerie:latest
