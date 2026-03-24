@@ -53,6 +53,14 @@ jobs:
               # Fix indentation with 1 space or 3+ spaces
               sed -i 's/^\( \{1\}\)\([^ ]\)/  \2/g' "$file"
               sed -i 's/^\( \{3,\}\)\([^ ]\)/  \2/g' "$file"
+
+              # Add document start if missing
+              if ! grep -q "^---" "$file"; then
+                sed -i '1s/^/---\n/' "$file"
+              fi
+
+              # Ensure newline at end of file
+              sed -i -e '$a\' "$file"
               
               if [ -n "$(git diff $file)" ]; then
                 CHANGES=true
