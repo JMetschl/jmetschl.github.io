@@ -29,7 +29,7 @@ jobs:
           for file in _data/japanese.yml; do
             if [ -f "$file" ]; then
               # Fix unquoted strings with colons
-              sed -i 's/^\(\s*description):\s*\)\([^"]*:[^"]*\)$/\1"\3"/g' "$file"
+              sed -i 's/^\(\s*description:\s*\)\([^"]*:[^"]*\)$/\1"\2"/g' "$file"
               
               # Remove trailing whitespace
               sed -i 's/[[:space:]]*$//' "$file"
