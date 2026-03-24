@@ -54,10 +54,6 @@ jobs:
               sed -i 's/^\( \{1\}\)\([^ ]\)/  \2/g' "$file"
               sed -i 's/^\( \{3,\}\)\([^ ]\)/  \2/g' "$file"
 
-              # Add document start if missing
-              if ! grep -q "^---" "$file"; then
-                sed -i '1s/^/---\n/' "$file"
-              fi
 
               # Ensure newline at end of file
               sed -i -e '$a\' "$file"
@@ -189,6 +185,7 @@ jobs:
           labels: automated
 
   docker-build:
+    if: needs.fix-yaml.outputs.changes == 'false'
     runs-on: ubuntu-latest
     needs: build
     permissions:
