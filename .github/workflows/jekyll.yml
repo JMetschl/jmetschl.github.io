@@ -14,141 +14,120 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # fix-yaml:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     changes: ${{ steps.fix.outputs.changes }}
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4.1.1
-
-  #     - name: Fix YAML issues
-  #       id: fix
-  #       run: |
-  #         CHANGES=false
-  #         for file in _data/cats.yml _data/dogs.yml; do
-  #           if [ -f "$file" ]; then
-  #             # Fix unquoted strings with colons
-  #             sed -i 's/^\(\s*text_\(hund\|zuhause\):\s*\)\([^"]*:[^"]*\)$/\1"\3"/g' "$file"
-              
-  #             # Remove trailing whitespace
-  #             sed -i 's/[[:space:]]*$//' "$file"
-              
-  #             # Fix duplicate list markers
-  #             sed -i '/^- - /s/^- - /- /' "$file"
-              
-  #             # Fix list markers with wrong indentation (3+ spaces before -)
-  #             sed -i 's/^   \+\(-\s\)/\1/g' "$file"
-              
-  #             # Fix list markers with missing or multiple spaces after dash
-  #             sed -i 's/^-\([^ ]\)/- \1/g' "$file"
-  #             sed -i 's/^-  \+/- /g' "$file"
-              
-  #             # Fix indentation errors (any key with more than 2 leading spaces should have exactly 2)
-  #             sed -i 's/^   \+\([a-z_][a-z_]*:\)/  \1/g' "$file"
-              
-  #             # Fix missing space after colon
-  #             sed -i 's/:\([^ ]\)/: \1/g' "$file"
-              
-  #             # Fix indentation with 1 space or 3+ spaces
-  #             sed -i 's/^\( \{1\}\)\([^ ]\)/  \2/g' "$file"
-  #             sed -i 's/^\( \{3,\}\)\([^ ]\)/  \2/g' "$file"
-              
-  #             # Fix common typos in keys (based on schema: name, größe, geschlecht, charakter, text_hund, text_zuhause, alter, hunde_nummer, notfall)
-  #             sed -i 's/^  groeße:/  größe:/g' "$file"
-  #             sed -i 's/^  grosse:/  größe:/g' "$file"
-  #             sed -i 's/^  charackter:/  charakter:/g' "$file"
-  #             sed -i 's/^  characktur:/  charakter:/g' "$file"
-  #             sed -i 's/^  charakter:/  charakter:/g' "$file"
-  #             sed -i 's/^  text_hund_:/  text_hund:/g' "$file"
-  #             sed -i 's/^  text_zuhause_:/  text_zuhause:/g' "$file"
-  #             sed -i 's/^  hunde_nummer:/  hunde_nummer:/g' "$file"
-  #             # Fix common typos in values (geschlecht)
-  #             sed -i 's/geschlecht: maennlich/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: männlich/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: Maennlich/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: maennlich/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: weiblich/geschlecht: Weiblich/g' "$file"
-  #             sed -i 's/geschlecht: Weiblich/geschlecht: Weiblich/g' "$file"
-  #             sed -i 's/geschlecht: MÄNNLICH/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: WEIBLICH/geschlecht: Weiblich/g' "$file"
-  #             sed -i 's/geschlecht: Rüde/geschlecht: Männlich/g' "$file"
-  #             sed -i 's/geschlecht: Hündin/geschlecht: Weiblich/g' "$file"
-              
-  #             if [ -n "$(git diff $file)" ]; then
-  #               CHANGES=true
-  #             fi
-  #           fi
-  #         done
-  #         echo "changes=$CHANGES" >> $GITHUB_OUTPUT
-
-  #     - name: Spell check YAML files (informational)
-  #       continue-on-error: true
-  #       run: |
-  #         # Install spell checker with sudo
-  #         sudo apt-get update -qq && sudo apt-get install -y -qq aspell aspell-de > /dev/null 2>&1
-          
-  #         for file in _data/cats.yml _data/dogs.yml; do
-  #           if [ -f "$file" ]; then
-  #             echo "=== Spell check for $file ==="
-  #             # Extract text values and check for spelling
-  #             grep -E "text_hund|text_zuhause|charakter:" "$file" | \
-  #               sed 's/.*: //' | \
-  #               aspell -d de -p /dev/null list | \
-  #               sort | uniq || true
-  #           fi
-  #         done
-
-  #     - name: Upload fixed YAML files
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: fixed-yaml
-  #         path: _data/*.yml
-  #         retention-days: 1
-
-#  validate:
-#    runs-on: ubuntu-latest
-#    needs: fix-yaml
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v4.1.1
-#
-#      - name: Download fixed YAML files
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: fixed-yaml
-#          path: _data
-#
-#      - name: Validate YAML Syntax
-#        run: |
-#          yamllint _data/cats.yml _data/dogs.yml
-#
-#      - name: Install Node.js
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: "20"
-#
-#      - name: Install AJV CLI
-#        run: npm install -g ajv-cli
-
-#      - name: Validate YAML Schema
-#        run: |
-#          for file in _data/cats.yml _data/dogs.yml; do
-#            ajv validate -s .github/schema/animal.json -d "$file" || exit 1
-#          done
-
-  build:
+  fix-yaml:
     runs-on: ubuntu-latest
-    #needs: validate
+    outputs:
+      changes: ${{ steps.fix.outputs.changes }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      # - name: Download fixed YAML files
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: fixed-yaml
-      #     path: _data
+      - name: Fix YAML issues
+        id: fix
+        run: |
+          CHANGES=false
+          for file in _data/japanese.yml; do
+            if [ -f "$file" ]; then
+              # Fix unquoted strings with colons
+              sed -i 's/^\(\s*description):\s*\)\([^"]*:[^"]*\)$/\1"\3"/g' "$file"
+              
+              # Remove trailing whitespace
+              sed -i 's/[[:space:]]*$//' "$file"
+              
+              # Fix duplicate list markers
+              sed -i '/^- - /s/^- - /- /' "$file"
+              
+              # Fix list markers with wrong indentation (3+ spaces before -)
+              sed -i 's/^   \+\(-\s\)/\1/g' "$file"
+              
+              # Fix list markers with missing or multiple spaces after dash
+              sed -i 's/^-\([^ ]\)/- \1/g' "$file"
+              sed -i 's/^-  \+/- /g' "$file"
+              
+              # Fix indentation errors (any key with more than 2 leading spaces should have exactly 2)
+              sed -i 's/^   \+\([a-z_][a-z_]*:\)/  \1/g' "$file"
+              
+              # Fix missing space after colon
+              sed -i 's/:\([^ ]\)/: \1/g' "$file"
+              
+              # Fix indentation with 1 space or 3+ spaces
+              sed -i 's/^\( \{1\}\)\([^ ]\)/  \2/g' "$file"
+              sed -i 's/^\( \{3,\}\)\([^ ]\)/  \2/g' "$file"
+              
+              if [ -n "$(git diff $file)" ]; then
+                CHANGES=true
+              fi
+            fi
+          done
+          echo "changes=$CHANGES" >> $GITHUB_OUTPUT
+
+      - name: Spell check YAML files (informational)
+        continue-on-error: true
+        run: |
+          # Install spell checker with sudo
+          sudo apt-get update -qq && sudo apt-get install -y -qq aspell aspell-de > /dev/null 2>&1
+          
+          for file in _data/japanese.yml; do
+            if [ -f "$file" ]; then
+              echo "=== Spell check for $file ==="
+              # Extract text values and check for spelling
+              grep -E "description:" "$file" | \
+                sed 's/.*: //' | \
+                aspell -d de -p /dev/null list | \
+                sort | uniq || true
+            fi
+          done
+
+      - name: Upload fixed YAML files
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixed-yaml
+          path: _data/*.yml
+          retention-days: 1
+
+  validate:
+   runs-on: ubuntu-latest
+   needs: fix-yaml
+   steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v4.1.1
+
+     - name: Download fixed YAML files
+       uses: actions/download-artifact@v4
+       with:
+         name: fixed-yaml
+         path: _data
+
+     - name: Validate YAML Syntax
+       run: |
+         yamllint _data/japanese.yml
+
+     - name: Install Node.js
+       uses: actions/setup-node@v4
+       with:
+         node-version: "20"
+
+     - name: Install AJV CLI
+       run: npm install -g ajv-cli
+
+     - name: Validate YAML Schema
+       run: |
+         for file in _data/japanese.yml; do
+           ajv validate -s .github/schema/art.json -d "$file" || exit 1
+         done
+
+  build:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Download fixed YAML files
+        uses: actions/download-artifact@v4
+        with:
+          name: fixed-yaml
+          path: _data
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -165,41 +144,41 @@ jobs:
       - name: Build Jekyll site
         run: bundle exec jekyll build
 
-  # create-fix-pr:
-  #   if: needs.fix-yaml.outputs.changes == 'true'
-  #   runs-on: ubuntu-latest
-  #   #needs: fix-yaml
-  #   permissions:
-  #     contents: write
-  #     pull-requests: write
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4.1.1
+  create-fix-pr:
+    if: needs.fix-yaml.outputs.changes == 'true'
+    runs-on: ubuntu-latest
+    needs: fix-yaml
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
 
-      # - name: Download fixed YAML files
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: fixed-yaml
-      #     path: _data
+      - name: Download fixed YAML files
+        uses: actions/download-artifact@v4
+        with:
+          name: fixed-yaml
+          path: _data
 
-      # - name: Create Pull Request with YAML fixes
-      #   uses: peter-evans/create-pull-request@v5
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     commit-message: 'fix: auto-correct YAML syntax issues'
-      #     title: 'fix: auto-correct YAML syntax issues'
-      #     body: |
-      #       Automated fix for YAML syntax errors detected during build.
+      - name: Create Pull Request with YAML fixes
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'fix: auto-correct YAML syntax issues'
+          title: 'fix: auto-correct YAML syntax issues'
+          body: |
+            Automated fix for YAML syntax errors detected during build.
             
-      #       **Changes made:**
-      #       - Fixed unquoted strings containing colons in text fields
-      #       - Removed trailing whitespace
-      #       - Corrected list item formatting
+            **Changes made:**
+            - Fixed unquoted strings containing colons in text fields
+            - Removed trailing whitespace
+            - Corrected list item formatting
             
-      #       Please review and merge if the changes look correct.
-      #     branch: fix/yaml-syntax
-      #     delete-branch: true
-      #     labels: automated
+            Please review and merge if the changes look correct.
+          branch: fix/yaml-syntax
+          delete-branch: true
+          labels: automated
 
   docker-build:
     runs-on: ubuntu-latest

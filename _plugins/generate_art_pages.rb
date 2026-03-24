@@ -51,6 +51,7 @@ module Jekyll
       self.data['type'] = type 
       self.data['image'] = main_image
       self.data['images'] = images
+      self.data['description'] = art['description']
     end
   end
 end
