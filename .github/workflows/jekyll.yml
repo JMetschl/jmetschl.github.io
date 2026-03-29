@@ -32,62 +32,29 @@ jobs:
 
               # Fix unquoted strings with colons
               sed -i 's/^\(\s*description:\s*\)\([^"]*:[^"]*\)$/\1"\2"/g' "$file"
-
+              
               # Remove trailing whitespace
               sed -i 's/[[:space:]]*$//' "$file"
-
+              
               # Fix duplicate list markers
               sed -i '/^- - /s/^- - /- /' "$file"
-
-              # Fix wrong indentation
+              
+              # Fix list markers with wrong indentation (3+ spaces before -)
               sed -i 's/^   \+\(-\s\)/\1/g' "$file"
-
-              # Fix dash spacing
+              
+              # Fix list markers with missing or multiple spaces after dash
               sed -i 's/^-\([^ ]\)/- \1/g' "$file"
               sed -i 's/^-  \+/- /g' "$file"
-
-              # Fix indentation of keys
+              
+              # Fix indentation errors (any key with more than 2 leading spaces should have exactly 2)
               sed -i 's/^   \+\([a-z_][a-z_]*:\)/  \1/g' "$file"
-
+              
               # Fix missing space after colon
               sed -i 's/:\([^ ]\)/: \1/g' "$file"
-
-              # Fix indentation with 1 or 3+ spaces
+              
+              # Fix indentation with 1 space or 3+ spaces
               sed -i 's/^\( \{1\}\)\([^ ]\)/  \2/g' "$file"
               sed -i 's/^\( \{3,\}\)\([^ ]\)/  \2/g' "$file"
-
-              # Remove multiple blank lines
-              sed -i '/^$/N;/^\n$/D' "$file"
-
-              # Wrap long lines (>80 chars)
-              awk 'length($0) > 80 && $0 ~ /^[^:]+: / {
-                    key=$1
-                    sub(":", "", key)
-                    value=substr($0, index($0,$2))
-                    print key ": >"
-                    while (length(value) > 78) {
-                        print "  " substr(value, 1, 78)
-                        value=substr(value, 79)
-                    }
-                    print "  " value
-                    next
-                  }
-                  { print }' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-
-              # Ensure newline at end of file
-              sed -i -e '$a\' "$file"
-
-              # Fix missing indentation for keys inside list items
-              sed -i 's/^\([a-zA-Z0-9_-]\+:\)/  \1/' "$file"
-
-              # Remove quotes inside folded block strings
-              sed -i '/>$/{
-                n
-                s/^  "\(.*\)"$/  \1/
-              }' "$file"
-
-              # Remove blank lines between list items
-              sed -i '/^$/N;/^\n-/D' "$file"
 
               if [ -n "$(git diff $file)" ]; then
                 CHANGES=true
