@@ -1,11 +1,20 @@
-{% assign art_name = include.art.name | downcase %} {% assign found_image
-= "" %} {% assign image_folder = "img/" | append: include.type | downcase %}
+{% assign art_slug = include.art.name | slugify %}
+{% assign found_image = "" %}
 
-<!-- find current art first image-->
-{% for image in site.static_files %} {% assign image_path = image.path |
-downcase %} {% if image_path contains image_folder and image_path contains
-art_name %} {% assign found_image = image.path %} {% break %} {% endif %} {%
-endfor %}
+{% assign folder = "/assets/img/" | append: include.type | append: "/" | append: art_slug | append: "/" %}
+{% assign folder_down = folder | downcase %}
+{% assign folder_len = folder_down | size %}
+
+{% for image in site.static_files %}
+  {% assign image_path = image.path | downcase %}
+  {% assign image_start = image_path | slice: 0, folder_len %}
+
+  {% if image_start == folder_down %}
+    {% assign found_image = image.path %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
 
 <a href="/{{ include.type }}/{{ include.art.name | slugify }}">
   <div
@@ -17,6 +26,7 @@ endfor %}
     </div>
   </div>
 </a>
+
 
 <style>
   .box {
