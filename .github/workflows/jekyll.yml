@@ -80,6 +80,18 @@ jobs:
               # Fix missing indentation for keys inside list items
               sed -i 's/^\([a-zA-Z0-9_-]\+:\)/  \1/' "$file"
 
+              # Fix missing indentation after folded block indicator ">"
+              sed -i '/>$/{
+                n
+                s/^\([^ ]\)/  \1/
+              }' "$file"
+
+              # Remove quotes inside folded block strings
+              sed -i '/>$/{
+                n
+                s/^  "\(.*\)"$/  \1/
+              }' "$file"
+
               # Remove blank lines between list items
               sed -i '/^$/N;/^\n-/D' "$file"
 
