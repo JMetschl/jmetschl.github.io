@@ -1,4 +1,4 @@
-name: Build & Publish Jekyll Docker Image
+name: Deploy Jekyll site to GitHub Pages
 
 on:
   push:
@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  packages: write
+  contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: "pages"
@@ -148,6 +149,11 @@ jobs:
       - name: Build Jekyll site
         run: bundle exec jekyll build
 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
   create-fix-pr:
     if: needs.fix-yaml.outputs.changes == 'true'
     runs-on: ubuntu-latest
@@ -184,31 +190,14 @@ jobs:
           delete-branch: true
           labels: automated
 
-  docker-build:
-    if: needs.fix-yaml.outputs.changes == 'false'
+  deploy:
+    if: needs.fix-yaml.outputs.changes != 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.1
-
-      # - name: Download fixed YAML files
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: fixed-yaml
-      #     path: _data
-
-      - name: Log in to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/jmetschl/familiengalerie:latest .
-
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/jmetschl/familiengalerie:latest
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
