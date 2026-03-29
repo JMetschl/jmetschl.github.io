@@ -15,7 +15,6 @@
       {% include navigation.html %}
       <div class="container" id="main-container">{{ content }}</div>
     </div>
-    {% include footer.html %}
   </body>
 </html>
 
@@ -26,21 +25,31 @@
   }
   #main-container {
     margin-bottom: 10vh;
-    min-height: 30vh;
+    min-height: 80vh;
   }
 </style>
 
 <script>
-
 const PASSWORD = "metschls";
+const KEY = "site_auth";
 
 function checkPassword() {
+  if (localStorage.getItem(KEY) === "true") {
+    return;
+  }
+
   const input = prompt("Passwort eingeben:");
-  if (input !== PASSWORD) {
+  if (input === PASSWORD) {
+    localStorage.setItem(KEY, "true"); 
+  } else {
     alert("Falsches Passwort!");
     window.location.href = "https://google.com";
   }
 }
+
+checkPassword();
 </script>
+
+
 
 <script>checkPassword();</script>
