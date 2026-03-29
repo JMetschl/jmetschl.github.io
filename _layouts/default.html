@@ -19,6 +19,7 @@
   </body>
 </html>
 
+
 <style>
   .navbar-padding-top {
     padding-top: 6em;
@@ -28,3 +29,18 @@
     min-height: 30vh;
   }
 </style>
+
+<script>
+
+const PASSWORD = "metschls";
+
+function checkPassword() {
+  const input = prompt("Passwort eingeben:");
+  if (input !== PASSWORD) {
+    alert("Falsches Passwort!");
+    window.location.href = "https://google.com";
+  }
+}
+</script>
+
+<script>checkPassword();</script>
