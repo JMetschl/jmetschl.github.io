@@ -77,6 +77,12 @@ jobs:
               # Ensure newline at end of file
               sed -i -e '$a\' "$file"
 
+              # Fix missing indentation for keys inside list items
+              sed -i 's/^\([a-zA-Z0-9_-]\+:\)/  \1/' "$file"
+
+              # Remove blank lines between list items
+              sed -i '/^$/N;/^\n-/D' "$file"
+
               if [ -n "$(git diff $file)" ]; then
                 CHANGES=true
               fi
