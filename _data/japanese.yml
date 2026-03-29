@@ -1,2 +1,14 @@
-- name: "TestBild"
+- name: "Kurtisane1"
   description: "TestBild Description"
+  artist: "Test"
+  timespan: "2024-2025"
+- name: "Kurtisane2"
+  description: "TestBild Description"
+  artist: "Test"
+  timespan: "2024-2025"
+- name: "Kurtisane3"
+  description: "TestBild Description"
+  artist: "Test"
+  timespan: "2024-2025"
+
+ 

@@ -52,6 +52,8 @@ module Jekyll
       self.data['image'] = main_image
       self.data['images'] = images
       self.data['description'] = art['description']
+      self.data['artist'] = art['artist']
+      self.data['timespan'] = art['timespan']
     end
   end
 end

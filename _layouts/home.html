@@ -1,6 +1,30 @@
 ---
 layout: default
+title: Ausstellung
 ---
 
+      <h2 class= "title is-3"> Unsere Ausstellung</h2>
+<div class="card-container">
+  <div class="columns is-multiline">
+    {% assign art = site.data.japanese | slice: 0, 3 %}
+    
+    {% for art_piece in art %}
+      <div class="column is-one-third">
+        {% assign art_type = 'japanese' %}
+        
+        {% include art-card.html art=art_piece type=art_type %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
 
-Deployment works, yay.
+<style>
+.cell {
+      display: flex;
+    justify-content: center;
+}
+.button-container{
+  display: flex;
+  justify-content: space-evenly;
+}
+</style>
