@@ -22,7 +22,7 @@
     style="background-image: url('{{ site.baseurl }}{{ found_image | default: include.art.image }}');"
   >
     <div class="box" id="name-box">
-      {{ include.art.name }} | {{ include.art.artist }}<br />
+      {{ include.art.name }} {{ include.art.artist }}<br />
     </div>
   </div>
 </a>
@@ -32,8 +32,9 @@
   .box {
     height: 40vh;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-color: grey;
     display: flex;
     justify-content: left;
     align-items: flex-end;
