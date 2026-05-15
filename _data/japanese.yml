@@ -1,6 +1,8 @@
-- name: "210-KatsukawaShunsho"
+- name: "210"
+  artist: "Katsukawa Shunsho"
   description: "Katsukawa Shunsho, 4 Oiran"
   timespan: "1726–1792"
+  price: "800 DM"
 
 - name: "018"
   description: "Hiroshige, Frau gebückt mit Pinsel"
