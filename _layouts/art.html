@@ -6,24 +6,16 @@ layout: default
   <div class="animal-display">
     <!-- Hauptbild -->
     <div class="animal-image-display mr-6">
-      <div
-        id="main-image"
-        class="box"
-        style="background-image: url('{{ page.image }}');"
-        data-current="{{ page.image }}"
-      ></div>
+      <div id="main-image" class="box" style="background-image: url('{{ page.image }}');"
+        data-current="{{ page.image }}"></div>
 
       {% if page.images.size > 1 %}
       <div class="image-gallery">
         {% assign thumbnails = page.images | slice: 1, 4 %}
         <!-- Nimmt die ersten 4 Bilder, ohne das Hauptbild -->
         {% for image in thumbnails %}
-        <div
-          class="thumbnail"
-          style="background-image: url('{{ site.baseurl }}{{ image }}');"
-          onclick="swapImage(this)"
-          data-image="{{ site.baseurl }}{{ image }}"
-        ></div>
+        <div class="thumbnail" style="background-image: url('{{ site.baseurl }}{{ image }}');" onclick="swapImage(this)"
+          data-image="{{ site.baseurl }}{{ image }}"></div>
         {% endfor %}
       </div>
       {% endif %}
@@ -32,7 +24,9 @@ layout: default
     <!-- Tierdetails -->
     <div>
       <h1 class="title">{{ page.title }}</h1>
-      <p class="subtitle">{{ page.artist }} - {{ page.timespan }}</p>
+      <p class="subtitle">{{ page.artist }}</p>
+        
+      <p class="subtitle">{{ page.timespan }}</p>
       <p class="description">{{ page.description }}</p>
     </div>
   </div>
@@ -41,13 +35,15 @@ layout: default
 <style>
   .animal-display {
     display: flex;
+    flex-direction: column;
   }
 
   .box {
-    height: 40vh;
-    min-width: 500px;
+    height: 60vh;
+    min-width: 100%;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
+    background-color: grey;
     background-position: center;
     display: flex;
     justify-content: left;
@@ -75,6 +71,10 @@ layout: default
 
   .thumbnail:hover {
     border-color: #3273dc;
+  }
+
+  .title {
+    margin-top: 20px;
   }
 </style>
 
